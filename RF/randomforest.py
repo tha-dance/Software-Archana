@@ -28,6 +28,7 @@ def evaluate_model (trainX,trainy, testX,testy,model):
 	return accuracy*100.0
 
 trainX,trainy, testX, testy = load_dataset()
-model = RandomForestClassifier(n_estimators =98)
+model = RandomForestClassifier(n_estimators =97,criterion = "entropy",max_features = "log2")
 results = evaluate_model(trainX,trainy,testX,testy,model)
+print("prarameters in use: ",model.get_params());
 print('results = %.3f' %results);
