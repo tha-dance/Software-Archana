@@ -3,6 +3,7 @@ from pandas import read_csv
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectFromModel
+from sklearn.metrics import confusion_matrix
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -33,6 +34,8 @@ def evaluate_model (trainX,trainy, testX,testy,model):
 	model.fit(trainX,trainy);
 	pred = model.predict(testX);
 	accuracy = accuracy_score(pred,testy);
+	print (" Confusion matrix \n", confusion_matrix(testy, pred))
+
 	return accuracy*100.0
 
 trainX,trainy, testX, testy = load_dataset()
@@ -50,7 +53,7 @@ results = evaluate_model(trainX_imp,trainy,testX_imp,testy,model)
 # plt.bar(range(len(model.feature_importances_)), model.feature_importances_)
 # plt.show()
 
-print("prarameters in use: ",model.get_params());
+#print("prarameters in use: ",model.get_params());
 print('results = %.3f' %results);
 
 
