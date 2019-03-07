@@ -1,9 +1,3 @@
-# !/usr/bin/env python
-# random_forest.py
-# Author : Saimadhu
-# Date: 10-June-2017
-# About: Implementing Random forest classifier to predict the breast cancer.
-
 # Required Python Packages
 import pandas as pd
 from sklearn.model_selection import train_test_split
