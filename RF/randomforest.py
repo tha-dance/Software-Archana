@@ -6,6 +6,7 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import KFold
 from sklearn.model_selection import train_test_split
+from sklearn.externals import joblib
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -31,8 +32,7 @@ def load_dataset(prefix=''):
 	trainy, testy = trainy[:,0], testy[:,0]
 	return trainX, trainy, testX, testy
 
-def evaluate_model (trainX,trainy, testX,testy,model):
-	model.fit(trainX,trainy);
+def evaluate_model (testX,testy,model):
 	pred = model.predict(testX);
 	accuracy = accuracy_score(pred,testy);
 	print (" Confusion matrix \n", confusion_matrix(testy, pred))
@@ -44,12 +44,15 @@ def evaluate_model (trainX,trainy, testX,testy,model):
 trainX,trainy, testX, testy = load_dataset()
 features = load_features()
 #model = RandomForestClassifier(n_estimators =95,criterion = "entropy",max_features = "log2")
-model = RandomForestClassifier(n_estimators = 100,criterion = "gini", n_jobs= -1);
-sfm = SelectFromModel(model,threshold = 0.00010)
+rf = RandomForestClassifier(n_estimators = 100,criterion = "gini", n_jobs= -1);
+sfm = SelectFromModel(rf,threshold = 0.00010)
 sfm.fit(trainX,trainy)
 trainX_imp = sfm.transform(trainX);
 testX_imp = sfm.transform(testX);
-results = evaluate_model(trainX_imp,trainy,testX_imp,testy,model)
+rf.fit(trainX_imp,trainy)
+joblib.dump(rf,"rf_final")
+model = joblib.load("rf_final")
+results = evaluate_model(testX_imp,testy,model)
 
 #for name, importance in zip(features, model.feature_importances_):
 	#print(name, "=", importance)
