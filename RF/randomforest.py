@@ -4,6 +4,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import KFold
+from sklearn.model_selection import train_test_split
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -21,10 +23,9 @@ def load_dataset_group(group,prefix = ''):
 	return X,y
 
 def load_dataset(prefix=''):
-	trainX, trainy = load_dataset_group('train',prefix+'./HARDataset/')
-	#print(trainX.shape, trainy.shape)
+	X,Y = load_dataset_group('train',prefix+'./HARDataset/')
 
-	testX,testy = load_dataset_group('test','./HARDataset/')
+	trainX, testX, trainy, testy = train_test_split(X, Y, test_size=0.2, random_state = 2)
 	#print(testX.shape, testy.shape)
 
 	trainy, testy = trainy[:,0], testy[:,0]
@@ -38,17 +39,20 @@ def evaluate_model (trainX,trainy, testX,testy,model):
 
 	return accuracy*100.0
 
+
+
 trainX,trainy, testX, testy = load_dataset()
 features = load_features()
-model = RandomForestClassifier(n_estimators =95,criterion = "entropy",max_features = "log2")
-sfm = SelectFromModel(model,threshold = 0.000011)
+#model = RandomForestClassifier(n_estimators =95,criterion = "entropy",max_features = "log2")
+model = RandomForestClassifier(n_estimators = 100,criterion = "gini", n_jobs= -1);
+sfm = SelectFromModel(model,threshold = 0.00010)
 sfm.fit(trainX,trainy)
 trainX_imp = sfm.transform(trainX);
 testX_imp = sfm.transform(testX);
 results = evaluate_model(trainX_imp,trainy,testX_imp,testy,model)
 
-# for name, importance in zip(features, model.feature_importances_):
-# 	print(name, "=", importance)
+#for name, importance in zip(features, model.feature_importances_):
+	#print(name, "=", importance)
 
 # plt.bar(range(len(model.feature_importances_)), model.feature_importances_)
 # plt.show()
