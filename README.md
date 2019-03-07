@@ -20,3 +20,4 @@ Checked the importance of the 500+ features in the dataset and visualised it to 
 
 Using data from HAR Dataset provided by UC Irvine's Machine learning repositiory. The accuracy of the current model is 98% on average.
 
+![](https://github.com/tha-dance/Software-Archana/blob/master/MLP/Screen%20Shot%202019-03-08%20at%2012.16.34%20AM.png)
