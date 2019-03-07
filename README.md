@@ -15,3 +15,8 @@ Checked the importance of the 500+ features in the dataset and visualised it to 
 
 
 ![](https://github.com/tha-dance/Software-Archana/blob/master/RF/Screen%20Shot%202019-02-21%20at%2011.40.36%20PM.png)
+
+## Multi-layer perceptron
+
+Using data from HAR Dataset provided by UC Irvine's Machine learning repositiory. The accuracy of the current model is 98% on average.
+
