@@ -5,7 +5,10 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split 
 from sklearn.preprocessing import StandardScaler  
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import classification_report, confusion_matrix  
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import classification_report, confusion_matrix 
+from sklearn.model_selection import cross_val_score 
+from sklearn.externals import joblib
 
 def load_file(filepath):
 	data_frame = read_csv(filepath, header=None, delim_whitespace =True)
@@ -29,8 +32,7 @@ def load_dataset(prefix=''):
 	trainy, testy = trainy[:,0], testy[:,0]
 	return trainX, trainy, testX, testy
 
-def evaluate_model (trainX,trainy, testX,testy,model):
-	model.fit(trainX,trainy);
+def evaluate_model (testX,testy,model):
 	pred = model.predict(testX);
 	accuracy = accuracy_score(pred,testy);
 	print (" Confusion matrix \n", confusion_matrix(testy, pred))
@@ -45,9 +47,17 @@ scaler.fit(trainX)
 
 trainX = scaler.transform(trainX)
 testX = scaler.transform(testX)
-mlp = MLPClassifier(hidden_layer_sizes=(30,30,30))
-results = evaluate_model(trainX,trainy,testX,testy,mlp)
 
-print('results = %.3f' %results);
+kf = StratifiedKFold(n_splits=5,random_state=4)
+mlp = MLPClassifier(hidden_layer_sizes=(30,30,30))
+mlp.fit(trainX,trainy);
+
+joblib.dump(mlp,"mlp_final")
+
+model = joblib.load("mlp_final")
+results = evaluate_model (testX,testy,model)
+trial = cross_val_score(model,trainX,trainy,cv=kf)
+
+print('results = %.3f' %results,'cross_val_score = %.3f' %(trial.mean()*100));
 
 
