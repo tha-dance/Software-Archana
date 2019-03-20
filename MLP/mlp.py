@@ -28,7 +28,9 @@ def load_dataset(prefix=''):
 
 	trainX, testX, trainy, testy = train_test_split(X, Y, test_size=0.2, random_state = 2)
 	#print(testX.shape, testy.shape)
-
+	#trainX, trainy = load_dataset_group('train',prefix+'./HARDataset/')
+	#print(trainX.shape, trainy.shape)
+	#testX,testy = load_dataset_group('test','./HARDataset/')
 	trainy, testy = trainy[:,0], testy[:,0]
 	return trainX, trainy, testX, testy
 

@@ -4,8 +4,9 @@ from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
 from sklearn.externals import joblib
 import numpy as np
 from matplotlib import pyplot as plt
@@ -44,6 +45,7 @@ def evaluate_model (testX,testy,model):
 trainX,trainy, testX, testy = load_dataset()
 features = load_features()
 #model = RandomForestClassifier(n_estimators =95,criterion = "entropy",max_features = "log2")
+kf = StratifiedKFold(n_splits=5,random_state=4)
 rf = RandomForestClassifier(n_estimators = 100,criterion = "gini", n_jobs= -1);
 sfm = SelectFromModel(rf,threshold = 0.00010)
 sfm.fit(trainX,trainy)
@@ -53,7 +55,7 @@ rf.fit(trainX_imp,trainy)
 joblib.dump(rf,"rf_final")
 model = joblib.load("rf_final")
 results = evaluate_model(testX_imp,testy,model)
-
+trial = cross_val_score(model,trainX,trainy,cv=kf)
 #for name, importance in zip(features, model.feature_importances_):
 	#print(name, "=", importance)
 
@@ -61,7 +63,7 @@ results = evaluate_model(testX_imp,testy,model)
 # plt.show()
 
 #print("prarameters in use: ",model.get_params());
-print('results = %.3f' %results);
+print('results = %.3f' %results,'cross_val_score = %.3f' %(trial.mean()*100));
 
 
 
