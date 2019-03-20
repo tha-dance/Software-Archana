@@ -1,5 +1,6 @@
 import pandas as pd 
 import numpy as np 
+import scipy as sc
 
 def min(segment):
 	arr = []
@@ -37,7 +38,7 @@ def entropy(segment):
 	arr = []
 	for i in range(0,9):
 		freq = np.abs(np.fft.rfft(segment[:,i]))
-		arr.append(stats.entropy(freq,base =2))
+		arr.append(sc.entropy(freq,base =2))
 	return arr
 
 def energy(segment):
@@ -46,3 +47,13 @@ def energy(segment):
 		freq = np.abs(np.fft.rfft(segment[:,i]))
 		arr.append(np.sum(freq**2)/len(freq))
 	return arr
+
+def extract(segment):
+	final = []
+	final.extend(min(segment))
+	final.extend(max(segment))
+	final.extend(mean(segment))
+	final.extend(standard_dev(segment))
+	final.extend(energy(segment))
+	final.extend(entropy(segment))
+	return final
