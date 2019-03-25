@@ -24,7 +24,7 @@ def load_dataset_group(group,prefix = ''):
 	return X,y
 
 def load_dataset(prefix=''):
-	X,Y = load_dataset_group('train',prefix+'./HARDataset/')
+	X,Y = load_dataset_group('train',prefix+'./Datasets_new/')
 
 	trainX, testX, trainy, testy = train_test_split(X, Y, test_size=0.2, random_state = 2)
 	#print(testX.shape, testy.shape)
@@ -42,7 +42,7 @@ def evaluate_model (testX,testy,model):
 	return accuracy*100.0
 
 trainX,trainy, testX, testy = load_dataset()
-features = load_features()
+#features = load_features()
 
 scaler = StandardScaler()
 scaler.fit(trainX)
