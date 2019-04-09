@@ -3,10 +3,10 @@ import json
 import os
 from feature_extraction import extract
 
-window_size = 50
-step_size = 25
+window_size = 48
+step_size = 9
 
-dir = os.listdir('Datasets_new/')
+dir = os.listdir('./Datasets_new/')
 result = []
 #print(dir)
 for csv_file in dir:
@@ -17,6 +17,7 @@ for csv_file in dir:
         processed = extract(dataset[row*step_size:row*step_size+window_size])
         processed.append(dataset[row][-1])
         # print(processed)
+        print(len(dataset))
         result.append(processed)
 
 df = pd.DataFrame(result)

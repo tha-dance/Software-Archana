@@ -9,9 +9,9 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import classification_report, confusion_matrix 
 from sklearn.model_selection import cross_val_score 
 from sklearn.externals import joblib
-
+import numpy as np
 def load_file(filepath):
-	data_frame = read_csv(filepath, header=None, delim_whitespace =True)
+	data_frame = read_csv(filepath, header=None, delim_whitespace=True)
 	return data_frame.values
 
 def load_features():
@@ -19,9 +19,15 @@ def load_features():
 	return features
 
 def load_dataset_group(group,prefix = ''):
-	X = load_file(prefix+group+'/X_'+group+'.txt')
-	y = load_file(prefix+group+'/y_'+group+'.txt')
+	X = load_file(prefix+group+'/trial_x'+'.txt')
+	y = load_file(prefix+group+'/trial_y'+'.txt')
+	print(np.where(np.isnan(X)))
 	return X,y
+
+
+def load_dataset_test(filename):
+	X = load_file(filename)
+	return X;
 
 def load_dataset(prefix=''):
 	X,Y = load_dataset_group('train',prefix+'./Datasets_new/')
@@ -33,6 +39,7 @@ def load_dataset(prefix=''):
 	#testX,testy = load_dataset_group('test','./HARDataset/')
 	trainy, testy = trainy[:,0], testy[:,0]
 	return trainX, trainy, testX, testy
+	#return X,Y
 
 def evaluate_model (testX,testy,model):
 	pred = model.predict(testX);
@@ -41,9 +48,11 @@ def evaluate_model (testX,testy,model):
 
 	return accuracy*100.0
 
-trainX,trainy, testX, testy = load_dataset()
+#trainX,trainy = load_dataset()
 #features = load_features()
-
+#testX = load_dataset_test('./crab.txt')
+#testy = load_dataset_test('./crab_testy.txt')
+trainX, trainy, testX, testy = load_dataset()
 scaler = StandardScaler()
 scaler.fit(trainX)
 
@@ -51,12 +60,15 @@ trainX = scaler.transform(trainX)
 testX = scaler.transform(testX)
 
 kf = StratifiedKFold(n_splits=5,random_state=4)
-mlp = MLPClassifier(hidden_layer_sizes=(30,30,30))
+mlp = MLPClassifier(hidden_layer_sizes=(40,40,40))
 mlp.fit(trainX,trainy);
 
-joblib.dump(mlp,"mlp_final")
+joblib.dump(mlp,"mlp_newtrain")
+joblib.dump(scaler, 'scaler.joblib')
 
-model = joblib.load("mlp_final")
+model = joblib.load("mlp_newtrain")
+#pred = model.predict(testX)
+#print(pred);
 results = evaluate_model (testX,testy,model)
 trial = cross_val_score(model,trainX,trainy,cv=kf)
 

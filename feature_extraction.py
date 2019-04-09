@@ -32,7 +32,7 @@ def rms(segment):
 		square+=(segment[i]**2)
 	mean = (square/float(9))
 	root =math.sqrt(mean)
-	return root
+	return root 
 
 def entropy(segment):
 	arr = []

@@ -19,20 +19,24 @@ def load_features():
 	features = load_file('./HARDataset/features.txt')
 	return features
 
+def load_dataset_test(filename):
+	X = load_file(filename)
+	return X;
+
 def load_dataset_group(group,prefix = ''):
-	X = load_file(prefix+group+'/X_'+group+'.txt')
-	y = load_file(prefix+group+'/y_'+group+'.txt')
+	X = load_file(prefix+group+'/trainx_new'+'.txt')
+	y = load_file(prefix+group+'/trainy_new'+'.txt')
 	return X,y
 
 def load_dataset(prefix=''):
 	X,Y = load_dataset_group('train',prefix+'./Datasets_new/')
 
-	trainX, testX, trainy, testy = train_test_split(X, Y, test_size=0.2, random_state = 2)
+	#trainX, testX, trainy, testy = train_test_split(X, Y, test_size=0.2, random_state = 2)
 	#print(testX.shape, testy.shape)
 
-	trainy, testy = trainy[:,0], testy[:,0]
-	return trainX, trainy, testX, testy
-
+	#trainy, testy = trainy[:,0], testy[:,0]
+	#return trainX, trainy, testX, testy
+	return X,Y
 def evaluate_model (testX,testy,model):
 	pred = model.predict(testX);
 	accuracy = accuracy_score(pred,testy);
@@ -42,12 +46,16 @@ def evaluate_model (testX,testy,model):
 
 
 
-trainX,trainy, testX, testy = load_dataset()
+trainX,trainy= load_dataset()
 #features = load_features()
 #model = RandomForestClassifier(n_estimators =95,criterion = "entropy",max_features = "log2")
 kf = StratifiedKFold(n_splits=5,random_state=4)
 rf = RandomForestClassifier(n_estimators = 100,criterion = "gini", n_jobs= -1);
 sfm = SelectFromModel(rf,threshold = 0.00010)
+
+testX = load_dataset_test('./raffles_testx.txt')
+testy = load_dataset_test('./raffles_testy.txt')
+
 sfm.fit(trainX,trainy)
 trainX_imp = sfm.transform(trainX);
 testX_imp = sfm.transform(testX);
@@ -55,7 +63,7 @@ rf.fit(trainX_imp,trainy)
 joblib.dump(rf,"rf_final")
 model = joblib.load("rf_final")
 results = evaluate_model(testX_imp,testy,model)
-trial = cross_val_score(model,trainX,trainy,cv=kf)
+#trial = cross_val_score(model,trainX,trainy,cv=kf)
 #for name, importance in zip(features, model.feature_importances_):
 	#print(name, "=", importance)
 
@@ -63,7 +71,7 @@ trial = cross_val_score(model,trainX,trainy,cv=kf)
 # plt.show()
 
 #print("prarameters in use: ",model.get_params());
-print('results = %.3f' %results,'cross_val_score = %.3f' %(trial.mean()*100));
+print('results = %.3f' %results)#,'cross_val_score = %.3f' %(trial.mean()*100));
 
 
 
